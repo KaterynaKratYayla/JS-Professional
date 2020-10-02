@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Burgers</title>
+  <!-- <link rel="stylesheet" href="" /> -->
+  <style>
+      body{
+         max-width: 90%;
+         margin-left: auto;
+         margin-right: auto;
+       }
+       
+      .menuWrap{
+        margin: 2vw;
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          /* justify-content: space-between; */
+      }
+
+      .infoBlock{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: column;
+        font-size: 20px;
+        font-family: 'Calibri';
+        
+      }
+
+      .burgerBlock{ 
+        display: flex;
+        flex-direction: row;
+        /* align-items: center; */
+        text-align: center;
+        /* max-width: 70%; */
+        justify-content: space-between;
+        width: 50vw;
+        /* padding-right:20%; */
+        border: 2px solid lightgrey;
+        padding: 3vw;
+      } 
+
+      .image img{
+        max-width:20vw;
+      }
+
+      .image{
+        border-right: 2px solid lightgray;
+      }
+
+      .checkBlock{
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          margin-left: 3vw;
+          border: 2px solid rgb(15, 78, 194);
+          max-height: 35vw;
+          max-width:13vw;
+      }
+
+     .inclusions{
+       font-size: 20px;
+       font-weight: bold;
+       color: rgb(15, 78, 194)
+     }
+
+      button{
+        font-size: 15px;
+        border-color: darkgrey;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .modal{
+        position: relative;
+        display: none;
+        margin-left: 3vw;
+        font-size: 20px;
+        max-height: 20vw;
+        max-width: 20vw;
+        background: rgb(217, 215, 230);
+        border: 2px solid rgb(15, 78, 194);
+        padding: 1vw;
+      }
+     
+     
+  </style>
+</head>
+<body>
+  
+<div class="menuWrap">
+  <div class='infoBlock'></div>
+  <div class='checkBlock'><span class='inclusions'>I wish my Burger to include :</span></div>
+  <div class='modal'><span class='inclusions'>Click to book from filtered results : </span></div>
+
+</div>
+
+<script>
+
+  /*
+
+    Задание:
+
+      1. Создать конструктор бургеров на классах, которая добавляет наш бургер в массив меню
+
+      Дожно выглядеть так:
+      new burger('Hamburger',[ ...Массив с ингредиентами ] , 20);
+
+      Моделька для бургера:
+      {
+        cookingTime: 0,     // Время на готовку
+        showComposition: function(){
+          let {composition, name} = this;
+          let compositionLength = composition.length;
+          console.log(compositionLength);
+          if( compositionLength !== 0){
+            composition.map( function( item ){
+                console.log( 'Состав бургера', name, item );
+            })
+          }
+        }
+      }
+
+      Результатом конструктора нужно вывести массив меню c добавленными элементами.
+      // menu: [ {name: "", composition: [], cookingTime:""},  {name: "", composition: [], cookingTime:""}]
+
+        2. Создать конструктор заказов
+
+        Моделька:
+        {
+          id: "",
+          orderNumber: "",
+          orderBurder: "",
+          orderException: "",
+          orderAvailability: ""
+        }
+
+          Заказ может быть 3х типов:
+            1. В котором указано название бургера
+              new Order('Hamburger'); -> Order 1. Бургер Hamburger, будет готов через 10 минут.
+            2. В котором указано что должно быть в бургере, ищете в массиве Menu подходящий вариант
+              new Order('', 'has', 'Название ингредиента') -> Order 2. Бургер Чизбургер, с сыром, будет готов через 5 минут.
+            3. В котором указано чего не должно быть
+              new Order('', 'except', 'Название ингредиента') ->
+
+
+            Каждый их которых должен вернуть статус:
+            "Заказ 1: Бургер ${Название}, будет готов через ${Время}
+
+            Если бургера по условиям заказа не найдено предлагать случайный бургер из меню:
+              new Order('', 'except', 'Булка') -> К сожалению, такого бургера у нас нет, можете попробовать "Чизбургер"
+              Можно например спрашивать через Confirm подходит ли такой вариант, если да - оформлять заказ
+              Если нет, предложить еще вариант из меню.
+
+        3. Протестировать программу.
+          1. Вначале добавляем наши бургеры в меню (3-4 шт);
+          2. Проверяем работу прототипного наследования вызывая метод showComposition на обьект бургера с меню
+          3. Формируем 3 заказа
+
+        + Бонусные задания:
+        4. Добавлять в исключения\пожелания можно несколько ингредиентов
+
+        */
+
+    //     {
+    //     cookingTime: 0,     // Время на готовку
+    //     showComposition: function(){
+    //       let {composition, name} = this;
+    //       let compositionLength = composition.length;
+    //       console.log(compositionLength);
+    //       if( compositionLength !== 0){
+    //         composition.map( function( item ){
+    //             console.log( 'Состав бургера', name, item );
+    //         })
+    //       }
+    //     }
+    //   }
+
+    // Результатом конструктора нужно вывести массив меню c добавленными элементами.
+      // menu: [ {name: "", composition: [], cookingTime:""},  {name: "", composition: [], cookingTime:""}]
+      const Ingredients = [
+    'Булка',
+    'Огурчик',
+    'Котлетка',
+    'Бекон',
+    'Рыбная котлета',
+    'Соус карри',
+    'Кисло-сладкий соус',
+    'Помидорка',
+    'Маслины',
+    'Острый перец',
+    'Капуста',
+    'Кунжут',
+    'Сыр Чеддер',
+    'Сыр Виолла',
+    'Сыр Гауда',
+    'Майонез'
+  ];
+
+ const Ingredients1 = [
+    'Булка',
+    'Огурчик',
+    'Котлетка',
+    'Бекон',
+    'Соус карри',
+    'Помидорка',
+    'Капуста',
+    'Кунжут',
+    'Майонез'
+  ];
+
+  const Ingredients2= [
+    'Булка',
+    'Огурчик',
+    'Котлетка',
+    'Бекон',
+    'Соус карри',
+    'Помидорка',
+    'Капуста',
+    'Кунжут',
+    'Сыр Чеддер',
+    'Майонез'
+  ];
+
+  const Ingredients3= [
+    'Булка',
+    'Огурчик',
+    'Котлетка',
+    'Бекон',
+    'Соус карри',
+    'Помидорка',
+    'Капуста',
+    'Кунжут',
+    'Сыр Чеддер',
+    'Сыр Виолла',
+    'Сыр Гауда',
+    'Майонез'
+  ];
+
+  const Ingredients4= [
+    'Булка',
+    'Рыбная котлета',
+    'Кисло-сладкий соус',
+    'Помидорка',
+    'Маслины',
+    'Острый перец',
+    'Кунжут',
+    'Сыр Чеддер',
+    'Майонез'
+  ];
+  
+const orderList = [];
+
+const menu = [];
+
+const c_checkBlock = document.querySelector('.checkBlock')
+   
+  Ingredients.forEach(function(item){
+        let v_smallCheck = document.createElement('div');
+        v_smallCheck.classList.add('filter');
+        v_smallCheck.innerHTML = `
+        <input type='checkbox' class='checks' name='${item}'>${item}</input>
+         `;
+         c_checkBlock.appendChild(v_smallCheck);
+      })
+      let incl_button = document.createElement('button')
+      incl_button.innerHTML = 'Submit'
+      incl_button.setAttribute('id','InclButton')
+      c_checkBlock.appendChild(incl_button)
+      // console.log(incl_button)
+
+  const c_modal = document.querySelector('.modal');
+    var temp = [];
+     let l_filter = document.querySelectorAll('.filter');
+      // console.log(l_filter.length);
+      let l_checks = document.querySelectorAll('.checks');
+      // console.log(l_checks)
+      console.log(menu)
+       incl_button.addEventListener('click',function(){
+        incl_button.setAttribute('disabled','true');
+         var temps2 = [];
+        for(var i=0; i<l_checks.length; i++){
+         if(l_checks[i].checked == true){
+          temps2.push(l_checks[i].name);
+          
+           console.log(temps2);
+          
+            console.log(menu);
+              menu.forEach(function(item){
+              console.log(item);  
+               item.filteredIngredients = temps2;           
+           item.composedfrom.forEach(function(ingred){
+            if(l_checks[i].name == ingred)
+              console.log(ingred);
+              temp.push(item)
+              console.log(item);
+              
+              })  
+              
+            })
+          }
+        }
+        var temp1 = temp.filter(function(part,pos){
+           return temp.indexOf(part) == pos;
+        })
+       console.log(temp1);
+         temp1.forEach(function(item1){
+           var v_modalDiv = document.createElement('div');
+           v_modalDiv.classList.add('modalDiv');
+           v_modalDiv.innerHTML = `
+           <button class='inclButton'>${item1.name}</button>
+           `;
+           c_modal.appendChild(v_modalDiv);
+           c_modal.style.display = 'block';
+           console.log(item1);
+         
+        // console.log(temp1)
+        const c_inclButton = document.querySelectorAll('.inclButton')
+        //  console.log(c_inclButton)
+           c_inclButton.forEach(function(button){
+            button.addEventListener('click',function(e){
+              
+               if(e.target.innerHTML == item1.name){
+               console.log(item1.cookingTime)
+               console.log(item1);
+               let a = new Burger (item1.name,item1.composedfrom, item1.cookingTime, 'P:/INTERNET SALES DEPARTMENT/FORMS AND BLANKS/personal/programming courses 2020/JS Professional/JS-Professional/JS-Professional/lesson_2/homework/images/mcdonalds-Hamburger.jpg', item1.filteredIngredients);
+               console.log(item1.filteredIngredients);
+               a.filter();
+              //  console.log(a);
+               }
+              // console.log(e.target)
+              incl_button.removeAttribute('disabled');
+              for(var i=0; i<l_checks.length; i++){
+              l_checks[i].checked = false;
+              }
+                    
+             })
+
+            })
+           })
+         })   
+
+class Order {
+  constructor (name, filteredIngredients){
+   this.name = name;
+   this.filteredIngredients = filteredIngredients;
+   this.alert = this.alert.bind(this);
+   this.filter = this.filter.bind(this);
+  } 
+   alert(){
+     alert(`Thank you for your order with ID № ${orderList.length+1}! Burger "${this.name}" will be ready in ${this.cookingTime} minutes`)
+     orderList.push(this);
+     console.log(orderList , orderList.length);
+   }
+
+   filter(){
+    alert(`Thank you for your order with ID № ${orderList.length+1}! Burger "${this.name}" with ${this.filteredIngredients} will be ready in ${this.cookingTime} minutes`)
+     orderList.push(this);
+     console.log(orderList , orderList.length); 
+   }
+}
+
+  // console.log(orderList.length)
+
+class Burger extends Order{
+      constructor(name, composedfrom, cookingTime, image, filteredIngredients){
+        super(name, filteredIngredients);
+        // this.name = name;
+        this.composedfrom = composedfrom;
+        this.cookingTime = cookingTime === undefined ? 0 : cookingTime ;
+        this.image = image === undefined ? 0 : image ;
+        this.renderBurger = this.renderBurger.bind(this);
+        this.addtoMenu = this.addtoMenu.bind(this);
+ 
+    }
+
+       addtoMenu(){  
+       menu.push({name:this.name,composedfrom:this.composedfrom, cookingTime:this.cookingTime});
+       console.log(menu);
+    }
+
+      renderBurger(){
+      const c_infoBlock = document.querySelector('.infoBlock');        
+      let l_burgerBlock = document.createElement('div');
+      l_burgerBlock.classList.add('burgerBlock')
+      const stringComposition = this.composedfrom.join();
+      
+      l_burgerBlock.innerHTML = `
+            <div class='image'><img src='${this.image}' /></div>
+            <div class='burger'>
+              <div>
+                <h2 class='name'>${this.name}</h2>
+                <div class='ingredients'><span style='font-weight:bold'>Ingredients:</span> ${stringComposition}</div>
+                <div class='cookingTime'><span style='font-weight:bold'>Cooking Time:</span> max ${this.cookingTime} minutes </div>
+             </div>
+             <div>
+              <button class='book'>Book Now</button> 
+             </div>
+            
+          </div>
+       ` 
+      ;
+      const c_book = l_burgerBlock.querySelector('.book');
+      c_book.addEventListener('click',this.alert) ;
+      console.log(c_book)  
+
+      c_infoBlock.appendChild(l_burgerBlock);
+      this.addtoMenu();
+    }
+
+}
+
+  let Hamburger = new Burger('Hamburger',Ingredients1, 15, 'P:/INTERNET SALES DEPARTMENT/FORMS AND BLANKS/personal/programming courses 2020/JS Professional/JS-Professional/JS-Professional/lesson_2/homework/images/mcdonalds-Hamburger.jpg');
+  let Cheeseburger = new Burger('Cheeseburger',Ingredients2, 5, 'P:/INTERNET SALES DEPARTMENT/FORMS AND BLANKS/personal/programming courses 2020/JS Professional/JS-Professional/JS-Professional/lesson_2/homework/images/Cheeseburgers-1-300x258.jpg');
+  let TripleCheeseburger = new Burger('TripleCheeseburger',Ingredients3, 7, 'P:/INTERNET SALES DEPARTMENT/FORMS AND BLANKS/personal/programming courses 2020/JS Professional/JS-Professional/JS-Professional/lesson_2/homework/images/mcdonaldstriplecheeseburger2702a.jpg');
+  let FishBurger = new Burger('FishBurger',Ingredients4, 9, 'P:/INTERNET SALES DEPARTMENT/FORMS AND BLANKS/personal/programming courses 2020/JS Professional/JS-Professional/JS-Professional/lesson_2/homework/images/fishburger.jpg');
+
+  Hamburger.renderBurger();
+  Cheeseburger.renderBurger();
+  TripleCheeseburger.renderBurger();
+  FishBurger.renderBurger();
+  
+    console.log(menu)
+
+
+    </script>
+
+
+
+  <!-- <script src="./burgerConstructor.js"></script> -->
+</body>
+</html>
