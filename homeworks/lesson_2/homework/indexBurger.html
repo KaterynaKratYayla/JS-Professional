@@ -73,9 +73,15 @@
         cursor: pointer;
       }
 
-      .modal{
-        position: relative;
+      .modalWrapper{
         display: none;
+       
+      }
+
+      .active{
+        position: relative;
+        display: flex;
+        flex-direction: column;
         margin-left: 3vw;
         font-size: 20px;
         max-height: 20vw;
@@ -84,7 +90,19 @@
         border: 2px solid rgb(15, 78, 194);
         padding: 1vw;
       }
-     
+
+        .clearFilter{
+          margin-top: 2vw;
+          background-color: mediumpurple;
+          color: white;
+          font-weight: bold;
+          border: 1px solid mediumslateblue
+        }
+
+        .clearFilter:hover{
+          background-color: moccasin;
+          color: grey;
+        }
      
   </style>
 </head>
@@ -93,8 +111,10 @@
 <div class="menuWrap">
   <div class='infoBlock'></div>
   <div class='checkBlock'><span class='inclusions'>I wish my Burger to include :</span></div>
-  <div class='modal'><span class='inclusions'>Click to book from filtered results : </span></div>
-
+  <div class='modalWrapper'><span class='inclusions'>Click to book from filtered results : </span>
+   <div class='modal'></div>
+   <button class='clearFilter'>Clear your Search</button>
+  </div>
 </div>
 
 <script>
@@ -196,7 +216,10 @@
     'Сыр Чеддер',
     'Сыр Виолла',
     'Сыр Гауда',
-    'Майонез'
+    'Майонез',
+    'Макароны',
+    'Вкусняшки',
+    'Ням'
   ];
 
  const Ingredients1 = [
@@ -208,7 +231,8 @@
     'Помидорка',
     'Капуста',
     'Кунжут',
-    'Майонез'
+    'Майонез',
+    'Макароны'
   ];
 
   const Ingredients2= [
@@ -221,7 +245,8 @@
     'Капуста',
     'Кунжут',
     'Сыр Чеддер',
-    'Майонез'
+    'Майонез',
+    'Вкусняшки'
   ];
 
   const Ingredients3= [
@@ -236,7 +261,8 @@
     'Сыр Чеддер',
     'Сыр Виолла',
     'Сыр Гауда',
-    'Майонез'
+    'Майонез',
+    'Ням'
   ];
 
   const Ingredients4= [
@@ -248,14 +274,16 @@
     'Острый перец',
     'Кунжут',
     'Сыр Чеддер',
-    'Майонез'
+    'Майонез',
+    'Ням'
   ];
   
 const orderList = [];
 
 const menu = [];
 
-const c_checkBlock = document.querySelector('.checkBlock')
+const c_checkBlock = document.querySelector('.checkBlock');
+const c_clearFilter = document.querySelector('.clearFilter');
    
   Ingredients.forEach(function(item){
         let v_smallCheck = document.createElement('div');
@@ -265,21 +293,24 @@ const c_checkBlock = document.querySelector('.checkBlock')
          `;
          c_checkBlock.appendChild(v_smallCheck);
       })
-      let incl_button = document.createElement('button')
-      incl_button.innerHTML = 'Submit'
-      incl_button.setAttribute('id','InclButton')
-      c_checkBlock.appendChild(incl_button)
+      let submit_button = document.createElement('button')
+      submit_button.innerHTML = 'Submit'
+      submit_button.setAttribute('id','Submit_Button')
+      c_checkBlock.appendChild(submit_button)
       // console.log(incl_button)
 
+  const c_modalWrapper = document.querySelector('.modalWrapper')
   const c_modal = document.querySelector('.modal');
+
     var temp = [];
      let l_filter = document.querySelectorAll('.filter');
       // console.log(l_filter.length);
       let l_checks = document.querySelectorAll('.checks');
       // console.log(l_checks)
       console.log(menu)
-       incl_button.addEventListener('click',function(){
-        incl_button.setAttribute('disabled','true');
+       submit_button.addEventListener('click',function(){
+        submit_button.setAttribute('disabled','true');
+        temp.length = 0;
          var temps2 = [];
         for(var i=0; i<l_checks.length; i++){
          if(l_checks[i].checked == true){
@@ -287,37 +318,50 @@ const c_checkBlock = document.querySelector('.checkBlock')
           
            console.log(temps2);
           
-            console.log(menu);
-              menu.forEach(function(item){
-              console.log(item);  
-               item.filteredIngredients = temps2;           
-           item.composedfrom.forEach(function(ingred){
-            if(l_checks[i].name == ingred)
-              console.log(ingred);
-              temp.push(item)
-              console.log(item);
-              
-              })  
-              
-            })
+            // console.log(menu);
+            menu.forEach(function(item){
+             console.log(item);  
+             item.filteredIngredients = [];    
+              item.composedfrom.forEach(function(ingred){
+               temps2.forEach(function(param){
+                if(ingred === param) { 
+                 item.filteredIngredients.push(param); 
+                 
+                 temp.push(item)
+                 
+                }
+              })
+                // console.log(ingred);
+                // console.log(temp);
+               })  
+             })
           }
         }
-        var temp1 = temp.filter(function(part,pos){
+      //   
+      console.log(temp);
+      var temp1 = temp.filter(function(part,pos){
            return temp.indexOf(part) == pos;
         })
        console.log(temp1);
+
          temp1.forEach(function(item1){
-           var v_modalDiv = document.createElement('div');
+           
+          var v_modalDiv = document.createElement('div');
+          if(v_modalDiv){
+            v_modalDiv.innerHTML = '';
+          }
            v_modalDiv.classList.add('modalDiv');
            v_modalDiv.innerHTML = `
            <button class='inclButton'>${item1.name}</button>
+  
            `;
-           c_modal.appendChild(v_modalDiv);
-           c_modal.style.display = 'block';
+           c_modalWrapper.classList.add('active');
+           c_modal.append(v_modalDiv);
            console.log(item1);
          
         // console.log(temp1)
         const c_inclButton = document.querySelectorAll('.inclButton')
+
         //  console.log(c_inclButton)
            c_inclButton.forEach(function(button){
             button.addEventListener('click',function(e){
@@ -325,22 +369,37 @@ const c_checkBlock = document.querySelector('.checkBlock')
                if(e.target.innerHTML == item1.name){
                console.log(item1.cookingTime)
                console.log(item1);
-               let a = new Burger (item1.name,item1.composedfrom, item1.cookingTime, 'P:/INTERNET SALES DEPARTMENT/FORMS AND BLANKS/personal/programming courses 2020/JS Professional/JS-Professional/JS-Professional/lesson_2/homework/images/mcdonalds-Hamburger.jpg', item1.filteredIngredients);
+               let a = new Burger (item1.name,item1.composedfrom, item1.cookingTime, 'images/mcdonalds-Hamburger.jpg', item1.filteredIngredients);
                console.log(item1.filteredIngredients);
                a.filter();
               //  console.log(a);
                }
               // console.log(e.target)
-              incl_button.removeAttribute('disabled');
-              for(var i=0; i<l_checks.length; i++){
-              l_checks[i].checked = false;
-              }
+            
                     
              })
 
             })
            })
          })   
+
+         c_clearFilter.addEventListener('click',function(e){
+              submit_button.removeAttribute('disabled');
+              for(var i=0; i<l_checks.length; i++){
+              l_checks[i].checked = false;
+              }
+              // e.target.style.display = 'none';
+              // c_modal.style.display = 'none';
+              c_modalWrapper.className ='modalWrapper';
+              let v_modalDiv = document.querySelectorAll('.modalDiv')
+                while (c_modal.firstChild) {
+                c_modal.removeChild(c_modal.firstChild);
+                }
+ 
+              console.log(c_modal)
+            
+            })
+
 
 class Order {
   constructor (name, filteredIngredients){
@@ -412,10 +471,10 @@ class Burger extends Order{
 
 }
 
-  let Hamburger = new Burger('Hamburger',Ingredients1, 15, 'P:/INTERNET SALES DEPARTMENT/FORMS AND BLANKS/personal/programming courses 2020/JS Professional/JS-Professional/JS-Professional/lesson_2/homework/images/mcdonalds-Hamburger.jpg');
-  let Cheeseburger = new Burger('Cheeseburger',Ingredients2, 5, 'P:/INTERNET SALES DEPARTMENT/FORMS AND BLANKS/personal/programming courses 2020/JS Professional/JS-Professional/JS-Professional/lesson_2/homework/images/Cheeseburgers-1-300x258.jpg');
-  let TripleCheeseburger = new Burger('TripleCheeseburger',Ingredients3, 7, 'P:/INTERNET SALES DEPARTMENT/FORMS AND BLANKS/personal/programming courses 2020/JS Professional/JS-Professional/JS-Professional/lesson_2/homework/images/mcdonaldstriplecheeseburger2702a.jpg');
-  let FishBurger = new Burger('FishBurger',Ingredients4, 9, 'P:/INTERNET SALES DEPARTMENT/FORMS AND BLANKS/personal/programming courses 2020/JS Professional/JS-Professional/JS-Professional/lesson_2/homework/images/fishburger.jpg');
+  let Hamburger = new Burger('Hamburger',Ingredients1, 15, 'images/mcdonalds-Hamburger.jpg');
+  let Cheeseburger = new Burger('Cheeseburger',Ingredients2, 5, 'images/Cheeseburgers-1-300x258.jpg');
+  let TripleCheeseburger = new Burger('TripleCheeseburger',Ingredients3, 7, 'images/mcdonaldstriplecheeseburger2702a.jpg');
+  let FishBurger = new Burger('FishBurger',Ingredients4, 9, 'images/fishburger.jpg');
 
   Hamburger.renderBurger();
   Cheeseburger.renderBurger();
