@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+ <style>
+     
+     .wrapper{
+         display: flex;
+         flex-direction: row;
+         justify-content: flex-start;
+         width: 500px;
+         
+     }
+     .readConst{
+         display: grid;
+         grid-template-columns: 5vw repeat(2,30vw);
+         grid-gap: 1vw;
+         padding: 0.5vw;
+         text-align: justify;
+     }
+        .readLaw{
+         background: rgb(231, 229, 229);
+         padding: 1.5vw;
+        }
+
+       .sider{
+         margin: 5vw; 
+         padding: 5vw;
+         /* display: block; */
+         background:rgb(10, 45, 66);
+         color: white;
+         font-weight: bold;
+         font-size: 25px;
+         border: 2px solid rgb(3,3,63);
+         min-width: 12vw;
+         vertical-align: middle;
+         text-align: center;
+     }
+
+     .show{
+         padding-top: 1vw;
+         padding-bottom: 1vw;
+         border: 2px solid white;
+         width: 12vw;
+     }
+     </style>
+</head>
+<body>
+    <div class='wrapper'>
+    <div class='main'></div>
+    <div class='sider'></div>
+    </div>
+    <!-- <script src='./objectfreeze.js'></script> -->
+    <script src='./singleton.js'></script>
+</body>
+</html>
+
